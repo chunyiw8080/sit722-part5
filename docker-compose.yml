@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  book-catalog:
+    image: chunyiwang/book-catalog:4
+    container_name: book-catalog
+    networks:
+      private_network:
+        ipv4_address: 172.18.0.2
+    ports:
+      - "80:80"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+
+  inventory:
+    image: chunyiwang/inventory:2
+    container_name: inventory
+    networks:
+      private_network:
+        ipv4_address: 172.18.0.3
+    ports:
+      - "81:80"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+
+networks:
+  private_network:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24
+
