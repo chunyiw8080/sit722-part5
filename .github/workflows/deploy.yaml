@@ -1,0 +1,32 @@
+name: Deploy microservice
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: ${{ github.sha }}
+      CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+      REGISTRY_UN: ${{ secrets.REGISTRY_UN }}
+      REGISTRY_PW: ${{ secrets.REGISTRY_PW  }}
+      DB_URL: ${{ secrets.DB_URL }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build images
+        run: bash ./scripts/build-image.sh
+      - name: Push image
+        run: bash ./scripts/push-image.sh
+      - uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+          kubectl-version: v1.29.3
+      - name: Deploy
+        run: bash ./scripts/deploy.sh
+

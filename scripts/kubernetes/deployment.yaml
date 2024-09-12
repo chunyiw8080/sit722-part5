@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: inventory
-        image: task82c.azurecr.io/inventory:1
+        image: $CONTAINER_REGISTRY/inventory:$VERSION
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
@@ -25,7 +25,7 @@ spec:
               name: db-config
               key: DATABASE_URL
       - name: book-catalog
-        image: task82c.azurecr.io/book-catalog:1
+        image: $CONTAINER_REGISTRY/book-catalog:$VERSION
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 81

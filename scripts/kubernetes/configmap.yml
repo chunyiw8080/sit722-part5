@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: db-config
 data:
-  DATABASE_URL: "postgresql://mydb_wrsb_user:wWwEuJ56Os6NO3OvGuDk4Ct85ieV05iD@dpg-crfsmfjv2p9s73a2c5mg-a.singapore-postgres.render.com/mydb_wrsb"
+  DATABASE_URL: "$DB_URL"
