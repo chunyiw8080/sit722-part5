@@ -1,12 +1,13 @@
-name: Deploy microservice
+name: Delete microservice
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: 
 
 jobs:
+
   deploy:
     runs-on: ubuntu-latest
-
+    
     env:
       VERSION: ${{ github.sha }}
       CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
@@ -16,14 +17,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Build images
-        run: bash ./scripts/build-image.sh
-      - name: Push image
-        run: bash ./scripts/push-image.sh
       - uses: tale/kubectl-action@v1
         with:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
           kubectl-version: v1.30.3
-      - name: Deploy
-        run: bash ./scripts/deploy.sh
-
+      - name: delete
+        run: ./scripts/delete.sh
