@@ -23,7 +23,7 @@ jobs:
       working-directory: ./scripts/terraform
       run: terraform init
 
-    - name: Terraform Destroy:
+    - name: Terraform Destroy
       working-directory: ./scripts/terraform
       run: terraform destroy
 
