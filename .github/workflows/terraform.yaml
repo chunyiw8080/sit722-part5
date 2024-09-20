@@ -48,7 +48,7 @@ jobs:
 
       - name: GitHub-Cli login
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          echo "${{ secrets.TOKEN }}" | gh auth login --with-token
 
       - name: Set Secrets
         run: |
