@@ -27,10 +27,10 @@ jobs:
       - name: Terraform Apply
         working-directory: ./scripts/terraform
         run: terraform apply -auto-approve \
-          -var "resource_group_name=${{ secrets.AZURE_RESOURCE_NAME }}" \
-          -var "location=${{ secrets.AZURE_RESOURCE_LOCATION }}" \
-          -var "app_name=${{ secrets.APP_NAME }}"\
-          -var "kubernetes_version=${{ secrets.AZURE_AKS_VERSION }}"
+          -var "resource_group_name=${{ vars.AZURE_RESOURCE_NAME }}" \
+          -var "location=${{ vars.AZURE_RESOURCE_LOCATION }}" \
+          -var "app_name=${{ vars.APP_NAME }}"\
+          -var "kubernetes_version=${{ vars.AZURE_AKS_VERSION }}"
         continue-on-error: true
 
       # - name: Get environment variables
