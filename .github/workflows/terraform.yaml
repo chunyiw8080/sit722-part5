@@ -42,8 +42,10 @@ jobs:
       #     echo "REGISTRY_PW=$(cat arc_password.txt)" >> $GITHUB_ENV
       #     echo "KUBE_CONFIG=$(cat kube_config.txt)" >> $GITHUB_ENV
 
-      - name: Install GitHub-Cli
-        run: sudo apt install gh -y
+      - name: Install dependencies
+        run: |
+          sudo apt install gh -y
+          sudo apt install jq -y
 
       - name: GitHub-Cli login
         run: |
@@ -54,11 +56,12 @@ jobs:
 
       - name: Set Secrets
         run: |
-          gh secret set CONTAINER_REGISTRY --body "$(terraform output -raw registry_login_server)"
-          echo "$(terraform output -raw registry_login_server)"
-          gh secret set REGISTRY_UN --body "$(terraform output -raw registry_admin_username)"
-          echo "$(terraform output -raw registry_admin_username)"
-          gh secret set REGISTRY_PW --body "$(terraform output -raw registry_admin_password)"
-          echo "$(terraform output -raw registry_admin_password)"
+          gh secret set CONTAINER_REGISTRY --body "$(az acr list | jq -r '.[0].loginServer')"
+          echo "$(az acr list | jq -r '.[0].loginServer')"
+          az acr credential show --name ${{ CONTAINER_REGISTRY }} --query "{username:username, passwords:passwords[0].value}" --output json > credentials.json
+          gh secret set REGISTRY_UN --body "$(cat credentials.json | jq -r '.username')"
+          echo "$(cat credentials.json | jq -r '.username')"
+          gh secret set REGISTRY_PW --body "$(cat credentials.json | jq -r '.password')"
+          echo "$(cat credentials.json | jq -r '.password')"
           gh secret set KUBE_CONFIG --body "$(terraform output -raw kube_config | base64)"
           echo "$(terraform output -raw kube_config | base64)"
