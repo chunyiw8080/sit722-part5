@@ -26,7 +26,11 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./scripts/terraform
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve \
+          -var "resource_group_name=${{ secrets.AZURE_RESOURCE_NAME }}" \
+          -var "location=${{ secrets.AZURE_RESOURCE_LOCATION }}" \
+          -var "app_name=${{ secrets.APP_NAME }}"\
+          -var "kubernetes_version=${{ secrets.AZURE_AKS_VERSION }}"
         continue-on-error: true
 
       # - name: Get environment variables
@@ -64,5 +68,6 @@ jobs:
           echo "$(cat credentials.json | jq -r '.username')"
           gh secret set REGISTRY_PW --body "$(cat credentials.json | jq -r '.passwords')"
           echo "$(cat credentials.json | jq -r '.password')"
-          gh secret set KUBE_CONFIG --body "$(terraform output -raw kube_config | base64)"
-          echo "$(terraform output -raw kube_config | base64)"
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_NAME }} --name ${{ secrets.APP_NAME }}  
+          gh secret set KUBE_CONFIG --body "sudo cat /root/.kube/config | base64"
+          echo "$(sudo cat /root/.kube/config | base64)"

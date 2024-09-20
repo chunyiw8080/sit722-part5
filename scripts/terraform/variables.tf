@@ -1,15 +1,15 @@
 variable "resource_group_name" {
-  default = "deakinuni"
+  default = ""
 }
 
 variable "location" {
-  default = "australiaeast"
+  default = ""
 }
 
 variable "app_name" {
-    default = "task92c"
+    default = ""
 }
 
 variable "kubernetes_version" {
-    default = "1.30.3"
+    default = ""
 }
