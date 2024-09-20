@@ -66,7 +66,7 @@ jobs:
 
           gh secret set REGISTRY_PW --body "$(cat credentials.json | jq -r '.passwords')"
           echo "$(cat credentials.json | jq -r '.passwords')"
-          
+
           az aks get-credentials --resource-group ${{ vars.AZURE_RESOURCE_NAME }} --name ${{ vars.APP_NAME }}  
-          gh secret set KUBE_CONFIG --body "$(sudo cat /root/.kube/config | base64)"
-          echo "$(sudo cat /root/.kube/config | base64)"
+          gh secret set KUBE_CONFIG --body "$(cat ~/.kube/config | base64 -w 0)"
+          echo "$(cat ~/.kube/config | base64)"

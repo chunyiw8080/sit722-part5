@@ -28,14 +28,9 @@ jobs:
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group ${{ vars.AZURE_RESOURCE_NAME }} --name ${{ vars.APP_NAME }} 
 
-      - name: Base64 Encode kubeconfig
-        run: |
-          base64_kubeconfig=$(cat ~/.kube/config | base64)
-          echo "base64_kube_config=$base64_kubeconfig" >> $GITHUB_ENV
-
       - uses: tale/kubectl-action@v1
         with:
-          base64-kube-config: ${{ env.base64_kube_config }}
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
           kubectl-version: "v${{ vars.AZURE_AKS_VERSION }}"
 
       - name: Deploy
