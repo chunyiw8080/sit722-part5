@@ -18,18 +18,26 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build images
         run: bash ./scripts/build-image.sh
+
       - name: Push image
         run: bash ./scripts/push-image.sh
+
+      - name: Azure login
+        run: az login --service-principal -u ${{ secrets.CLIENT_ID }} -p ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.TENANT_ID }}
+
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group ${{ vars.AZURE_RESOURCE_NAME }} --name ${{ vars.APP_NAME }} 
+
       - name: Base64 Encode kubeconfig
         run: |
           base64_kubeconfig=$(cat ~/.kube/config | base64)
           echo "base64_kube_config=$base64_kubeconfig" >> $GITHUB_ENV
+
       - uses: tale/kubectl-action@v1
         with:
           base64-kube-config: ${{ env.base64_kube_config }}
           kubectl-version: "v${{ vars.AZURE_AKS_VERSION }}"
+
       - name: Deploy
         run: bash ./scripts/deploy.sh
 
