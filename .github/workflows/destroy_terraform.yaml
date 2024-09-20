@@ -25,7 +25,7 @@ jobs:
 
     - name: Terraform Destroy
       working-directory: ./scripts/terraform
-      run: terraform destroy
+      run: terraform destroy -auto-approve -var "resource_group_name=${{ vars.AZURE_RESOURCE_NAME }}" -var "location=${{ vars.AZURE_RESOURCE_LOCATION }}" -var "app_name=${{ vars.APP_NAME }}" -var "kubernetes_version=${{ vars.AZURE_AKS_VERSION }}"
 
     - name: Refresh terraform
       working-directory: ./scripts/terraform  
