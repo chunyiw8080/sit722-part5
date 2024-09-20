@@ -23,3 +23,8 @@ resource "azurerm_role_assignment" "role_assignment" {
   role_definition_name = "AcrPull"
   skip_service_principal_aad_check = true
 }
+
+output "kube_config" {
+  value = azurerm_kubernetes_cluster.kubernetes_cluster.kube_config_raw
+  sensitive = true
+}
