@@ -16,10 +16,15 @@ jobs:
       DB_URL: ${{ secrets.DB_URL }}
 
     steps:
+      - name: Azure login
+        run: az login --service-principal -u ${{ secrets.CLIENT_ID }} -p ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.TENANT_ID }}
+
+      - name: Get AKS credentials
+        run: az aks get-credentials --resource-group ${{ vars.AZURE_RESOURCE_NAME }} --name ${{ vars.APP_NAME }} 
       - uses: actions/checkout@v3
       - uses: tale/kubectl-action@v1
         with:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
-          kubectl-version: v1.30.3
+          kubectl-version: "v${{ vars.AZURE_AKS_VERSION }}"
       - name: delete
         run: ./scripts/delete.sh
