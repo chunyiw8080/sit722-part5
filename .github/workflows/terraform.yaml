@@ -28,7 +28,7 @@ jobs:
         working-directory: ./scripts/terraform
         run: terraform apply -auto-approve
         continue-on-error: true
-        
+
       # - name: Get environment variables
       #   working-directory: ./scripts/terraform
       #   run: |
@@ -49,10 +49,13 @@ jobs:
         run: |
           echo "${{ secrets.TOKEN }}" | gh auth login --with-token
 
+      - name: Refresh terraform state
+        run: terraform refresh
+
       - name: Set Secrets
         run: |
-          gh secret set CONTAINER_REGISTRY --body "$(terraform output -raw container_registry_login_server)"
-          echo "$(terraform output -raw container_registry_login_server)"
+          gh secret set CONTAINER_REGISTRY --body "$(terraform output -raw registry_login_server)"
+          echo "$(terraform output -raw registry_login_server)"
           gh secret set REGISTRY_UN --body "$(terraform output -raw registry_admin_username)"
           echo "$(terraform output -raw registry_admin_username)"
           gh secret set REGISTRY_PW --body "$(terraform output -raw registry_admin_password)"
