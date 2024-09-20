@@ -29,19 +29,6 @@ jobs:
         run: terraform apply -auto-approve -var "resource_group_name=${{ vars.AZURE_RESOURCE_NAME }}" -var "location=${{ vars.AZURE_RESOURCE_LOCATION }}" -var "app_name=${{ vars.APP_NAME }}" -var "kubernetes_version=${{ vars.AZURE_AKS_VERSION }}"
         continue-on-error: true
 
-      # - name: Get environment variables
-      #   working-directory: ./scripts/terraform
-      #   run: |
-      #     terraform output -raw container_registry_login_server > acr_server.txt
-      #     terraform output -raw registry_admin_username > acr_username.txt
-      #     terraform output -raw registry_admin_password > arc_password.txt
-      #     terraform output -raw kube_config | base64 > kube_config.txt
-
-      #     echo "CONTAINER_REGISTRY=$(cat acr_server.txt)" >> $GITHUB_ENV
-      #     echo "REGISTRY_UN=$(cat acr_username.txt)" >> $GITHUB_ENV
-      #     echo "REGISTRY_PW=$(cat arc_password.txt)" >> $GITHUB_ENV
-      #     echo "KUBE_CONFIG=$(cat kube_config.txt)" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: |
           sudo apt install gh -y
