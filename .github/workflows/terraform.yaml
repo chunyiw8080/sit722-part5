@@ -58,7 +58,7 @@ jobs:
         run: |
           gh secret set CONTAINER_REGISTRY --body "$(az acr list | jq -r '.[0].loginServer')"
           echo "$(az acr list | jq -r '.[0].loginServer')"
-          az acr credential show --name ${{ CONTAINER_REGISTRY }} --query "{username:username, passwords:passwords[0].value}" --output json > credentials.json
+          az acr credential show --name ${{ secrets.CONTAINER_REGISTRY }} --query "{username:username, passwords:passwords[0].value}" --output json > credentials.json
           gh secret set REGISTRY_UN --body "$(cat credentials.json | jq -r '.username')"
           echo "$(cat credentials.json | jq -r '.username')"
           gh secret set REGISTRY_PW --body "$(cat credentials.json | jq -r '.password')"
