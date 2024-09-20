@@ -1,31 +1,59 @@
-name: 'Terraform Apply'
+name: Terraform Apply
 
 on:
   workflow_dispatch:
 
 jobs:
   terraform:
-    name: 'Terraform apply'
+    name: Terraform apply
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Checkout Code'
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: 'Set up Terraform'
+      - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.6
 
-      - name: 'Azure Login'
+      - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_KEY }}
 
-      - name: 'Terraform Init'
+      - name: Terraform Init
         working-directory: ./scripts/terraform
         run: terraform init
 
-      - name: 'Terraform Apply'
+      - name: Terraform Apply
         working-directory: ./scripts/terraform
         run: terraform apply -auto-approve
+
+      # - name: Get environment variables
+      #   working-directory: ./scripts/terraform
+      #   run: |
+      #     terraform output -raw container_registry_login_server > acr_server.txt
+      #     terraform output -raw registry_admin_username > acr_username.txt
+      #     terraform output -raw registry_admin_password > arc_password.txt
+      #     terraform output -raw kube_config | base64 > kube_config.txt
+
+      #     echo "CONTAINER_REGISTRY=$(cat acr_server.txt)" >> $GITHUB_ENV
+      #     echo "REGISTRY_UN=$(cat acr_username.txt)" >> $GITHUB_ENV
+      #     echo "REGISTRY_PW=$(cat arc_password.txt)" >> $GITHUB_ENV
+      #     echo "KUBE_CONFIG=$(cat kube_config.txt)" >> $GITHUB_ENV
+
+      - name: Install GitHub-Cli
+        run: sudo apt install gh -y
+
+      - name: GitHub-Cli login
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Set Secrets
+        run: |
+          gh secret set CONTAINER_REGISTRY --body "$(terraform output -raw container_registry_login_server)"
+          gh secret set REGISTRY_UN --body "$(terraform output -raw registry_admin_username)"
+          gh secret set REGISTRY_PW --body "$(terraform output -raw registry_admin_password)"
+          gh secret set KUBE_CONFIG --body "$(terraform output -raw kube_config | base64)"
+
