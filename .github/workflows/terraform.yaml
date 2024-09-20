@@ -51,7 +51,10 @@ jobs:
       - name: Set Secrets
         run: |
           gh secret set CONTAINER_REGISTRY --body "$(terraform output -raw container_registry_login_server)"
+          echo "$(terraform output -raw container_registry_login_server)"
           gh secret set REGISTRY_UN --body "$(terraform output -raw registry_admin_username)"
+          echo "$(terraform output -raw registry_admin_username)"
           gh secret set REGISTRY_PW --body "$(terraform output -raw registry_admin_password)"
+          echo "$(terraform output -raw registry_admin_password)"
           gh secret set KUBE_CONFIG --body "$(terraform output -raw kube_config | base64)"
-
+          echo "$(terraform output -raw kube_config | base64)"
