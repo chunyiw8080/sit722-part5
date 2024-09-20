@@ -56,7 +56,7 @@ jobs:
 
       - name: Set Secrets
         run: |
-          acr_name = $(az acr list | jq -r '.[0].loginServer')
+          acr_name=$(az acr list | jq -r '.[0].loginServer')
           echo "$acr_name"
           gh secret set CONTAINER_REGISTRY --body "$acr_name"
           az acr credential show --name $acr_name" --query "{username:username, passwords:passwords[0].value}" --output json > credentials.json
