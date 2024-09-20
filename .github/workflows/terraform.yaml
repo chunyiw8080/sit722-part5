@@ -27,7 +27,8 @@ jobs:
       - name: Terraform Apply
         working-directory: ./scripts/terraform
         run: terraform apply -auto-approve
-
+        continue-on-error: true
+        
       # - name: Get environment variables
       #   working-directory: ./scripts/terraform
       #   run: |
