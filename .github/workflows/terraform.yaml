@@ -29,6 +29,12 @@ jobs:
         run: terraform apply -auto-approve -var "resource_group_name=${{ vars.AZURE_RESOURCE_NAME }}" -var "location=${{ vars.AZURE_RESOURCE_LOCATION }}" -var "app_name=${{ vars.APP_NAME }}" -var "kubernetes_version=${{ vars.AZURE_AKS_VERSION }}"
         continue-on-error: true
 
+      - name: Upload Terraform state file
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-state-file
+          path: ./scripts/terraform/terraform.tfstate
+
       - name: Install dependencies
         run: |
           sudo apt install gh -y
