@@ -16,7 +16,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.6
-
+      # Use command: az ad sp create-for-rbac --name chunyiw8080/part5-actions --role Owner --scopes /subscriptions/8affb53b-a4bb-494e-8011-325a74cc7828 --sdk-auth to generate required data
       - name: Azure Login
         run: az login --service-principal -u ${{ secrets.CLIENT_ID }} -p ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.TENANT_ID }}
 
@@ -50,16 +50,11 @@ jobs:
       - name: Set Secrets
         run: |
           acr_name=$(az acr list | jq -r '.[0].loginServer')
-          echo "$acr_name"
           gh secret set CONTAINER_REGISTRY --body "$acr_name"
 
           az acr credential show --name "$acr_name" --query "{username:username, passwords:passwords[0].value}" --output json > credentials.json
           gh secret set REGISTRY_UN --body "$(cat credentials.json | jq -r '.username')"
-          echo "$(cat credentials.json | jq -r '.username')"
-
           gh secret set REGISTRY_PW --body "$(cat credentials.json | jq -r '.passwords')"
-          echo "$(cat credentials.json | jq -r '.passwords')"
 
           az aks get-credentials --resource-group ${{ vars.AZURE_RESOURCE_NAME }} --name ${{ vars.APP_NAME }}  
           gh secret set KUBE_CONFIG --body "$(cat ~/.kube/config | base64 -w 0)"
-          echo "$(cat ~/.kube/config | base64)"
